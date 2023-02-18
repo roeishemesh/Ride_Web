@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Find Ride</title>
+    <link rel="stylesheet" type="text/css" href='/static/find_ride_style.css'>
+    <style>
+
+
+    </style>
+</head>
+<body>
+<form class="container" action="/ride_update" method="post">
+    <div class="container-label">
+        <label for="uphone"><b>Your Phone Number:</b></label>
+        <label>
+            <input type="text" placeholder="Enter Username" value="+972547372008" name="uphone" required>
+        </label>
+        <label for="ref_num"><b>Reference Number:</b></label>
+        <label>
+            <input type="number" placeholder="Reference Number" value="111111" name="ref_num" required>
+        </label>
+           {% if error %}
+            <p id="error"> Error: {{ error }}</p>
+            {% endif %}
+        <label>
+        <button> Find Your Ride</button>
+        </label>
+    </div>
+</form>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>My First Web Page</title>
+    <link rel="stylesheet" type="text/css" href='/static/home_page_style.css'>
+</head>
+<body>
+<div class="container">
+    <h1 class="title">Let's Find a Ride</h1>
+    <div class="buttons-container">
+        <form action="/new_ride" method="get">
+            <button> Add a New Ride</button>
+        </form>
+        <form action="/rides_board" method="get">
+            <button> Look for existing rides</button>
+        </form>
+        <form action="/find_ride" method="get">
+            <button> Update your ride</button>
+        </form>
+        <form>
+             <button> Search for ride</button>
+        </form>
+    </div>
+</div>
+</body>
+</html>

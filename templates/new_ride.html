@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>New Ride</title>
+    <link rel="stylesheet" type="text/css" href='/static/new_ride_style.css'>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const cities_name = []
+            // Send a GET request to the URL
+            fetch('https://data.gov.il/api/action/datastore_search?resource_id=5c78e9fa-c2e2-4771-93ff-7f400a12f7ba&limit=999999')
+                // Put response into json form
+                .then(response => response.json())
+                .then(data => {
+                    data.result.records.forEach(record => {
+                        cities_name.push(record['שם_ישוב_לועזי']);
+
+                    });
+                    console.log(cities_name);
+                    const datalist = document.querySelector('#cities-data');
+                    cities_name.forEach(city => {
+                        if (city !== " ") {
+                            const option = document.createElement('option');
+                            option.value = city;
+                            datalist.appendChild(option);
+                        }
+                    });
+                });
+        });
+
+        function test() {
+            const formData = new FormData(document.querySelector(".form-container"));
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+            fetch("/new_ride", {
+                "method": "POST",
+                "headers": {"Content-Type": "application/json"},
+                "body": JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(response => {
+                    {#document.querySelector(".box label").textContent = `your reference number : ${response.reference}`;#}
+                    const reference_number = response.reference;
+                    document.querySelector(" #referenceNumber").textContent = reference_number;
+
+
+                    document.getElementById("divOne").style.display = "block";
+                });
+        }
+
+
+    </script>
+</head>
+<body>
+<form class="form-container" method="post" action="javascript:test();">
+    <div class="back_box">
+        <h1>Let's Create a New Ride:</h1>
+        <div class="fields-container">
+            <div class="first_field">
+                <label class="label" for="name"> Driver Name:</label>
+                <input type="text" class="input" autocomplete="off" autofocus name="name" placeholder="Full Name"
+                       value="Test"
+                       required>
+                <label class="label" for="place">Available seats:</label>
+                <input type="number" class="input" autocomplete="off" placeholder="number of sites" name="seats" min="1"
+                       max="6">
+
+                <label class="label" for="date"> Drive's date:</label>
+                <input type="date" class="input" name="date" required value="01/02/2023">
+                <datalist id="cities-data">
+                </datalist>
+                <label class="label" for="departure"> Drive's departure:</label>
+                <input type="text" list="cities-data" id="city-choice" placeholder="departuree from" autocomplete="off"
+                       class="input" name="departure" value="RAMAT GAN"/>
+            </div>
+            <div class="sec_field">
+                <label class="label" for="phone"> Driver Phone</label>
+                <input type="text" class="input" autocomplete="off" autofocus name="phone" placeholder="phone number"
+                       value="+9725"
+                       required>
+                <label class="label" for="price"> Drive's price:</label>
+                <input type="number" class="input" autocomplete="off" placeholder="ride price" name="price" min="0"
+                       max="1000">
+
+                <label class="label" for="hour">Drive's hour:</label>
+                <input type="time" class="input" name="hour" value="23:00" required>
+                <label class="label" for="destination">Drive's destination:</label><input
+                    type="text" autocomplete="off" class="input" placeholder="destination" name="destination"
+                    list="cities-data" id="city-choice"
+                    required value="RAMAT GAN"></div>
+        </div>
+        <button id="creat_ride_button"> Creat New Ride</button>
+    </div>
+</form>
+<div class="box">
+    <div class="overlay" id="divOne">
+        <div class="wrapper">
+            <div class="contend">
+                <div class="container">
+                    <div class="text">
+                        <p id="paragraph"> Thanks you for creating a ride. <br>Your reference number is: <span
+                                id="referenceNumber">{reference_number}</span>.<br>Please
+                            remember this number in case you want<br> to update or delete your ride.
+                        </p>
+                        <div class="exit_buttons">
+                            <form method="get" action='/rides_board'>
+                                <button> To Rides Board</button>
+                            </form>
+                            <form method="get" action='/'>
+                                <button> To Home Page</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+

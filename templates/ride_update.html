@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ride Update</title>
+    <link rel="stylesheet" type="text/css" href='/static/ride_update_style.css'>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const cities_name = []
+            // Send a GET request to the URL
+            fetch('https://data.gov.il/api/action/datastore_search?resource_id=5c78e9fa-c2e2-4771-93ff-7f400a12f7ba&limit=999999')
+                // Put response into json form
+                .then(response => response.json())
+                .then(data => {
+                    data.result.records.forEach(record => {
+                        cities_name.push(record['שם_ישוב_לועזי']);
+
+                    });
+                    console.log(cities_name);
+                    const datalist = document.querySelector('#cities-data');
+                    cities_name.forEach(city => {
+                        if (city !== " ") {
+                            const option = document.createElement('option');
+                            option.value = city;
+                            datalist.appendChild(option);
+                        }
+                    });
+                });
+        });
+    </script>
+</head>
+<body>
+<form class="form-container" method="post" action="{{ url_for('update_ride_endpoint') }}">
+    <div class="back_box">
+        <h1>Let's Update Your Ride</h1>
+        <div class="fields-container">
+            <div class="first_field">
+                <label class="label" for="name"> Driver Name:</label>
+                <input type="text" class="input" autocomplete="off" autofocus name="name" placeholder="Full Name"
+                       value="{{ ride.name }}"
+                       required>
+                <label class="label" for="place">Available seats:</label>
+                <input type="number" class="input" autocomplete="off" placeholder="number of sites" name="seats" min="1"
+                       max="6" value="{{ ride.several_places }}">
+
+                <label class="label" for="date"> Drive's date:</label>
+                <input type="date" class="input" name="date" required value="{{ ride.date }}">
+                <datalist id="cities-data">
+                </datalist>
+                <label class="label" for="departure"> Drive's departure:</label>
+                <input type="text" list="cities-data" id="city-choice" placeholder="departuree from" autocomplete="off"
+                       class="input" name="departure" value="{{ ride.departure }}"/>
+            </div>
+            <div class="sec_field">
+                <label class="label" for="phone"> Driver Phone</label>
+                <input type="text" class="input" autocomplete="off" autofocus name="phone" placeholder="phone number"
+                       value="{{ ride.phone }}"
+                       required>
+                <label class="label" for="price"> Drive's price:</label>
+                <input type="number" class="input" autocomplete="off" placeholder="ride price" name="price" min="0"
+                       max="1000" value="{{ ride.ride_price }}">
+
+                <label class="label" for="hour">Drive's hour:</label>
+                <input type="time" class="input" name="hour" value="{{ ride.hour }}" required>
+                <label class="label" for="destination">Drive's destination:</label><input
+                    type="text" autocomplete="off" class="input" placeholder="destination" name="destination"
+                    list="cities-data" id="city-choice"
+                    required value="{{ ride.destination }}"></div>
+        </div>
+        <div class="xx">
+            <input type="hidden" name="button_id" id="button_id">
+            <input id="Ride_Update" type="button" value="Update Your Ride"
+                   onclick="document.getElementById('button_id').value = '1'; this.form.submit();">
+            <input id="Delete_Ride" type="button" value="Delete Your Ride"
+                   onclick="document.getElementById('button_id').value = '2'; this.form.submit();">
+        </div>
+    </div>
+    <input type="hidden" value="{{ ride.reference_num }}" name="reference_number">
+</form>
+
+</body>
+</html>
+
+

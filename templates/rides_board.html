@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rides_board</title>
+    <link rel="stylesheet" type="text/css" href='/static/rides_board_style.css'>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const cities_name = []
+            // Send a GET request to the URL
+            fetch('https://data.gov.il/api/action/datastore_search?resource_id=5c78e9fa-c2e2-4771-93ff-7f400a12f7ba&limit=999999')
+                // Put response into json form
+                .then(response => response.json())
+                .then(data => {
+                    data.result.records.forEach(record => {
+                        cities_name.push(record['שם_ישוב_לועזי']);
+
+                    });
+                    console.log(cities_name);
+                    const datalist = document.querySelector('#cities-data');
+                    cities_name.forEach(city => {
+                        if (city !== " ") {
+                            const option = document.createElement('option');
+                            option.value = city;
+                            datalist.appendChild(option);
+                        }
+                    });
+                });
+        });
+
+    </script>
+</head>
+<body>
+<form action="/hello" method="get">
+    <button type="submit" id="back_button"> Back</button>
+</form>
+<form method="post">
+    <div id="search">
+        <datalist id="cities-data">
+        </datalist>
+        <input type="text" id="depart_search" autocomplete="off" autofocus name="depart_search" placeholder="Departure"
+               list="cities-data">
+        <input type="text" id="dest_search" autocomplete="off" autofocus name="dest_search" placeholder="Destination"
+               list="cities-data">
+
+        <input type="date" id="date_search" name="date_search">
+        <input type="time" class="hour_search" name="min_time_search" min="00:00" max="23:59">
+        <input type="time" class="hour_search" name="max_time_search" min="00:00" max="23:59">
+        <button type="submit" id="search_button">search</button>
+    </div>
+</form>
+<ul class="accordion">
+    {% for ride in rides %}
+        <li>
+            <input type="radio" name="accord" id={{ ride.ride_id }}>
+            <label for={{ ride.ride_id }}>
+                <div id="dest"> {{ ride.departure }}</div>
+                <div id="arrow"> ------></div>
+                <div id="depart">{{ ride.destination }}</div>
+                <div id="date"> Date: {{ ride.date }} </div>
+                <div id="hour"> Hour: {{ ride.hour }} </div>
+                {% if ride.ride_price == -1 %}
+                    <div id="price">Price: Unknown</div>
+                {% elif ride.ride_price == -0 %}
+                    <div id="price">Price: Free</div>
+                {% else %}
+                    <div id="price">Price: {{ ride.ride_price }}₪</div>
+                {% endif %}
+            </label>
+            <div class="contend">
+
+                <div class="xx">
+                    <div> Your driver name is: {{ ride.name }}</div>
+                    {% if  ride.several_places == -1 %}
+                        <div> Number of available seats: Unknown</div>
+                    {% else %}
+                        <div> Number of available seats: {{ ride.several_places }} </div>
+                    {% endif %}
+                </div>
+                <button onclick="window.open('https://wa.me/{{ ride.phone[0:] }}', '_blank')" id="wp"> Talk with
+                    your
+                    driver
+                </button>
+            </div>
+        </li>
+    {% endfor %}
+</ul>
+
+</body>
+</html>
