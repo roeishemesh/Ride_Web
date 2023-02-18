@@ -2,7 +2,7 @@ import datetime
 
 from peewee import *
 
-mysql_db = MySQLDatabase('web.db', user='root', password='1431',
+mysql_db = MySQLDatabase('web.db', user='****', password='****',
                          host='localhost')
 
 
